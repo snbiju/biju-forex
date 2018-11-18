@@ -5,6 +5,7 @@ import com.forex.forex_demo.util.DataNotFoundException;
 import com.forex.forex_demo.util.DuplicateDataFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,7 +19,8 @@ import java.util.List;
 public class OrderService {
     public static final Logger logger = LoggerFactory.getLogger(OrderService.class);
     private static List<Order> orders = new ArrayList<>();
-
+    @Value("${forex.price}")
+    private double price;
     public void create(Order order) {
         Order findOrder = getOrder(order.getOrderId());
         if (findOrder != null) {
@@ -27,7 +29,9 @@ public class OrderService {
                 throw new DuplicateDataFoundException("Unable to create order. Order Id already exists.");
             }
         }
+        order.setPrice(price);
         orders.add(order);
+        logger.info("order info {}", order);
     }
 
     public Order findByOrderId(String orderId){
@@ -43,7 +47,7 @@ public class OrderService {
         if(orders != null) {
             for (Order order : orders) {
                 if (order.getOrderId().equalsIgnoreCase(orderId)) {
-                    logger.info("order info {}", order);
+                    order.setPrice(price);
                     orderValue = order;
                 }
             }

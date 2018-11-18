@@ -76,7 +76,7 @@ public class ForexOrderControllerTest {
     @Test
     public void registerNewOrder() throws Exception{
         String uri = "/forex/order";
-        Order order = new Order("1","GBP",1.2100,8500.00);
+        Order order = new Order("1","GBP",8500.00);
         String inputJson = mapToJson(order);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
@@ -90,7 +90,7 @@ public class ForexOrderControllerTest {
     @Test
     public void registerWithAnExistingOrder() throws Exception{
         String uri = "/forex/order";
-        Order order = new Order("1","GBP",1.2100,8500.00);
+        Order order = new Order("1","GBP",8500.00);
         when(orderService.findByOrderId(anyString())).thenReturn(order);
         String inputJson = mapToJson(order);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(uri)
@@ -103,7 +103,7 @@ public class ForexOrderControllerTest {
     @Test
     public void cancelAnExistingOrder() throws Exception{
         String uri = "/forex/cancel";
-        Order order = new Order("1","GBP",1.2100,8500.00);
+        Order order = new Order("1","GBP",8500.00);
         String inputJson = mapToJson(order);
         when(orderService.findByOrderId(any())).thenReturn(order);
 
@@ -120,7 +120,7 @@ public class ForexOrderControllerTest {
     @Test
     public void whenCancellingOrderNotExists() throws Exception{
         String uri = "/forex/cancel";
-        Order order = new Order("1","GBP",1.2100,8500.00);
+        Order order = new Order("1","GBP",8500.00);
         String inputJson = mapToJson(order);
         when(orderService.findByOrderId(any())).thenReturn(null);
 
@@ -135,9 +135,9 @@ public class ForexOrderControllerTest {
     @Test
     public void whenSearchOrderShouldReturnNotMatchedSummary() throws Exception{
         String uri = "/forex/mismatch/4";
-        Order order1 = new Order("1","GBP",1.2100,8500.00);
-        Order order2 = new Order("2","GBP",1.2100,8500.00);
-        Order order3 = new Order("3","GBP",1.2100,8500.00);
+        Order order1 = new Order("1","GBP",8500.00);
+        Order order2 = new Order("2","GBP",8500.00);
+        Order order3 = new Order("3","GBP",8500.00);
 
         when(orderService.findMisMatch(any())).thenReturn(Arrays.asList(order1, order2,order3));
 
@@ -158,9 +158,9 @@ public class ForexOrderControllerTest {
     @Test
     public void whenSearchOrderByIdShouldReturnOrder() throws Exception{
         String uri = "/forex/order/1";
-        Order order1 = new Order("1","GBP",1.2100,8500.00);
-        Order order2 = new Order("2","GBP",1.2100,8500.00);
-        Order order3 = new Order("3","GBP",1.2100,8500.00);
+        Order order1 = new Order("1","GBP",8500.00);
+        Order order2 = new Order("2","GBP",8500.00);
+        Order order3 = new Order("3","GBP",8500.00);
 
         when(orderService.findByOrderId(any())).thenReturn(order1);
 
@@ -182,9 +182,9 @@ public class ForexOrderControllerTest {
     @Test
     public void whenSearchOrderShouldReturnAllOrder() throws Exception{
         String uri = "/forex/order";
-        Order order1 = new Order("1","GBP",1.2100,8500.00);
-        Order order2 = new Order("2","GBP",1.2100,8500.00);
-        Order order3 = new Order("3","GBP",1.2100,8500.00);
+        Order order1 = new Order("1","GBP",8500.00);
+        Order order2 = new Order("2","GBP",8500.00);
+        Order order3 = new Order("3","GBP",8500.00);
 
         when(orderService.findAll()).thenReturn(Arrays.asList(order1, order2,order3));
 
