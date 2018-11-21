@@ -37,6 +37,20 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
         return new ResponseEntity(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(OrderNotValidException.class)
+    public final ResponseEntity<ErrorDetails> handleOrderNotValidException(OrderNotValidException ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(),
+                request.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @ExceptionHandler(DuplicateDataFoundException.class)
+    public final ResponseEntity<ErrorDetails> handleDuplicateDataFoundException(DuplicateDataFoundException ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(),
+                request.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.FOUND);
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -44,6 +58,7 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
                 ex.getBindingResult().toString());
         return new ResponseEntity(errorDetails, HttpStatus.BAD_REQUEST);
     }
+
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public final ResponseEntity<ErrorDetails> handleResourceFoundException(ResourceNotFoundException ex, WebRequest request) {

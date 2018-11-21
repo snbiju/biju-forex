@@ -21,34 +21,38 @@ url: http://localhost:8088/swagger-ui.html
 
 **Create new Order**
 (POST REQUEST)
-http://localhost:8088/forex/order(POST REQUEST)
+http://localhost:8088/forex/create(POST REQUEST)
 
 Request body
 
- {
-        "orderId": "2",
-        "currency": "GBP",
-        "amount":"6500.00"
+  {
+     "userId": "1",
+     "orderType": "ASK",
+     "currency": "GBP/USD",
+     "price": 1.2100,
+     "amount": 100
    }
    
  **Cancel Order**
  (DELETE REQUEST)
  http://localhost:8088/forex/cancel
  {
-        "orderId": "1",
-        "currency": "GBP",
-        "amount":"6500.00"
-   }
+      "userId": "1",
+      "orderType": "ASK",
+      "currency": "GBP/USD",
+      "price": 1.2100,
+      "amount": 100
+    }
    
-  **Not matched Order**
+**Find Order**
 (GET REQUEST)
- http://localhost:8088/forex/mismatch/3
+ http://localhost:8088/forex/matched
+       
+**Unmatched Order**
+(GET REQUEST)
+ http://localhost:8088/forex/unmatched
  
-  **Find Order** (By Order Id)
-    (GET REQUEST)
-    
-    http://localhost:8088/forex/order/1
     
 **Get All Order**
 (GET REQUEST)
-http://localhost:8088/forex/order
+ http://localhost:8088/forex/all

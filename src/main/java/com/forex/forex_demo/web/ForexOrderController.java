@@ -2,7 +2,6 @@ package com.forex.forex_demo.web;
 
 import com.forex.forex_demo.model.Order;
 import com.forex.forex_demo.service.OrderService;
-import com.forex.forex_demo.util.DataNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -28,52 +27,57 @@ import java.util.List;
 public class ForexOrderController {
     public static final Logger logger = LoggerFactory.getLogger(ForexOrderController.class);
 
-    @Autowired
-    private OrderService service;
 
-    @ApiOperation(value ="Create new order")
-    @ApiResponses(value = {@ApiResponse(code = 201,message = "Order successfully created."),@ApiResponse(code =301,message = "Order Already Exists!")})
-    @RequestMapping(value="/order", method = RequestMethod.POST)
+    private OrderService orderService;
+
+    @Autowired
+    public ForexOrderController(OrderService orderService){
+        this.orderService =orderService;
+    }
+
+    @ApiOperation(value ="Create new order" ,position = 1)
+    @ApiResponses(value = {@ApiResponse(code = 201,message = "Order successfully created."),@ApiResponse(code =302,message = "Duplicate Order!.Order Already Exists!"),@ApiResponse(code =406,message = "Order not valid")})
+    @RequestMapping(value="/create", method = RequestMethod.POST)
     public ResponseEntity<?> createOrder(@Valid @RequestBody Order order){
-        service.create(order);
+        orderService.create(order);
         return new ResponseEntity<String>("Order is created successfully",HttpStatus.CREATED);
     }
 
-    @ApiOperation(value ="Delete Order")
+    @ApiOperation(value ="Delete Order" )
     @ApiResponses(value = {@ApiResponse(code = 204,message = "Order is cancelled successfully."),@ApiResponse(code =404,message = "Order Not Found!")})
     @RequestMapping(value = "/cancel", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteOrder(@Valid @RequestBody Order order) {
-        service.deleteOrder(order);
+        orderService.cancelOrder(order);
         return new ResponseEntity<String>("Order is cancelled successfully",HttpStatus.NO_CONTENT);
     }
 
-    @ApiOperation(value ="Mismatch Order")
+    @ApiOperation(value ="Mismatch Order" ,position = 4)
     @ApiResponses(value = {@ApiResponse(code = 200,message = "Mismatched Order has been fetched."),@ApiResponse(code =404,message = "Order Not Found!")})
-    @RequestMapping(value = "/mismatch/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findMisMatch(@Valid @PathVariable("id") String id) {
+    @RequestMapping(value = "/unmatched", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> findUnMatch() {
 
-        List<Order> misMatchList = service.findMisMatch(id);
-
-        return new ResponseEntity<List<Order>>(misMatchList, HttpStatus.OK);
-
-    }
-    @ApiOperation(value ="Find Order")
-    @ApiResponses(value = {@ApiResponse(code = 200,message = "Order has been fetched."),@ApiResponse(code =404,message = "Order Not Found!")})
-    @RequestMapping(value = "/order/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findMatch(@Valid @PathVariable("id") String id) {
-
-        Order order = service.findByOrderId(id);
-        logger.info("order information: {}",order);
-        return new ResponseEntity<Order>(order, HttpStatus.OK);
+        List<Order> unMatchList = orderService.findUnMatch();
+        logger.info("order information {}",unMatchList);
+        return new ResponseEntity<List<Order>>(unMatchList, HttpStatus.OK);
 
     }
-
-    @ApiOperation(value ="Find All Orders")
+    @ApiOperation(value ="Find Order" ,position = 2)
     @ApiResponses(value = {@ApiResponse(code = 200,message = "Order has been fetched."),@ApiResponse(code =404,message = "Order Not Found!")})
-    @RequestMapping(value = "/order", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/matched", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+
+    public ResponseEntity<?> findMatch() {
+        List<List<Order>>  matchList = orderService.findMatch();
+        logger.info("order information {}",matchList);
+        return new ResponseEntity<List<List<Order>>>(matchList, HttpStatus.OK);
+
+    }
+
+    @ApiOperation(value ="Find All Orders", position = 3)
+    @ApiResponses(value = {@ApiResponse(code = 200,message = "Order has been fetched.")})
+    @RequestMapping(value = "/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findAll() {
 
-        List<Order> ordersList = service.findAll();
+        List<Order> ordersList = orderService.findAll();
 
         return new ResponseEntity<List<Order>>(ordersList, HttpStatus.OK);
 
