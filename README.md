@@ -44,7 +44,7 @@ Request body
       "amount": 100
     }
    
-**Find Order**
+**Matched Order**
 (GET REQUEST)
  http://localhost:8088/forex/matched
        
